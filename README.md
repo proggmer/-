@@ -1,1 +1,1 @@
-https://github.com/proggmer/-
+https://proggmer.github.io/-/
