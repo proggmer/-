@@ -1,1 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Способы оплаты</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0b1528;--bg-deep:#070e1c;--surface:rgba(255,255,255,0.03);--surface-hover:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.2);--text:#fff;--text-muted:#8fa0c0;--text-dim:#cbd5e1;--accent:#3b82f6;--accent-glow:rgba(59,130,246,0.15);--accent-light:#60a5fa;--accent-bright:#93c5fd;--green:#10b981;--green-glow:rgba(16,185,129,0.15);--green-light:#34d399;--red:#ef4444;--red-glow:rgba(239,68,68,0.15);--red-light:#f87171;--mono:'JetBrains Mono',monospace;--sans:'Onest',sans-serif;--radius:20px;--radius-sm:12px;--radius-xs:8px;--transition-smooth:cubic-bezier(.4,0,.2,1);--transition-bounce:cubic-bezier(0.34,1.56,0.64,1);--transition-expo:cubic-bezier(0.16,1,0.3,1);--transition-flip:cubic-bezier(0.4,0,0.2,1)}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.65;padding:40px 16px}
+.page{max-width:680px;margin:0 auto}
 
+.header{text-align:center;margin-bottom:32px}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,#93c5fd 50%,var(--accent-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.sub{color:var(--text-muted);font-size:14px}
+
+/* Nav tabs */
+.nav-bar{display:flex;justify-content:center;margin-bottom:32px}
+.nav-bar-inner{display:flex;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:99px;padding:5px;gap:4px;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,0.2)}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:11px 24px;border-radius:99px;border:none;background:transparent;color:var(--text-muted);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .35s var(--transition-smooth);white-space:nowrap}
+.nav-btn.active{background:rgba(59,130,246,0.15);color:var(--text);border:1px solid rgba(59,130,246,0.3);box-shadow:0 0 24px rgba(59,130,246,0.12)}
+.nav-btn:not(.active):hover{background:var(--surface-hover);color:var(--text-dim)}
+.nav-btn:active{transform:scale(0.97)}
+
+.section-title{display:flex;align-items:center;gap:12px;margin:28px 0 16px}
+.section-title-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent)}
+.section-title-text{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);white-space:nowrap}
+
+/* Flip card */
+.flip-card{perspective:1000px;cursor:pointer;margin-bottom:14px}
+.flip-card-inner{position:relative;width:100%;min-height:140px;transition:transform .7s var(--transition-flip);transform-style:preserve-3d}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-card-front,.flip-card-back{position:absolute;inset:0;width:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius-sm);padding:20px 22px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.flip-card-front{background:var(--surface);border:1px solid var(--border);z-index:2;transform:rotateY(0deg);transition:border-color .3s,box-shadow .3s}
+.flip-card:hover .flip-card-front{border-color:rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+.flip-card-back{transform:rotateY(180deg);z-index:1}
+.flip-card-back.safe{background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.04));border:1px solid rgba(16,185,129,0.3)}
+.flip-card-back.unsafe{background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.04));border:1px solid rgba(239,68,68,0.3)}
+.flip-card-back.neutral{background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(59,130,246,0.04));border:1px solid rgba(59,130,246,0.25)}
+
+.flip-front-row{display:flex;align-items:center;gap:14px}
+.flip-badge{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;font-weight:800}
+.flip-badge-green{background:var(--green-glow);border:1px solid rgba(16,185,129,0.3);color:var(--green-light)}
+.flip-badge-blue{background:var(--accent-glow);border:1px solid rgba(59,130,246,0.3);color:var(--accent-light)}
+.flip-badge-red{background:var(--red-glow);border:1px solid rgba(239,68,68,0.3);color:var(--red-light)}
+.flip-front-text{flex:1}
+.flip-front-name{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.flip-front-desc{font-size:12.5px;color:var(--text-muted);margin-top:3px}
+.flip-front-fee{text-align:right;flex-shrink:0}
+.flip-fee-val{font-size:18px;font-weight:800;color:#fff}
+.flip-fee-label{font-size:11px;color:var(--text-muted)}
+.flip-card-back .flip-back-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:10px}
+.flip-card-back .flip-back-text{font-size:13px;color:var(--text-dim);line-height:1.7}
+.flip-card-back .flip-back-text strong{color:var(--text)}
+.flip-hint{position:absolute;bottom:14px;right:20px;font-size:11px;color:var(--text-muted);opacity:.5;transition:opacity .3s}
+.flip-card:hover .flip-hint{opacity:.8}
+
+/* Detail button */
+.detail-btn{display:inline-flex;align-items:center;gap:5px;background:var(--accent-glow);border:1px solid rgba(59,130,246,0.35);border-radius:99px;padding:4px 12px 4px 10px;font-size:11px;font-weight:700;color:var(--accent-light);cursor:pointer;transition:all .25s var(--transition-smooth);vertical-align:middle;box-shadow:0 2px 8px rgba(59,130,246,0.1)}
+.detail-btn:hover{background:rgba(59,130,246,0.25);border-color:rgba(59,130,246,0.6);color:var(--accent-bright);transform:translateY(-2px);box-shadow:0 4px 16px rgba(59,130,246,0.25)}
+.detail-btn:active{transform:scale(0.95) translateY(0)}
+.detail-btn svg{width:12px;height:12px;transition:transform .3s var(--transition-bounce)}
+.detail-btn:hover svg{transform:translateX(2px)}
+@keyframes arrowPulse{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}
+.flip-card:hover .detail-btn svg{animation:arrowPulse 1s ease-in-out infinite}
+
+/* Contact section */
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center}
+.contact-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.contact-links{display:flex;flex-direction:column;gap:12px;align-items:center}
+.contact-link{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(16,185,129,0.1));border:1px solid rgba(59,130,246,0.3);border-radius:99px;padding:14px 28px;text-decoration:none;color:#fff;font-weight:700;font-size:15px;transition:all .4s var(--transition-smooth)}
+.contact-link:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(59,130,246,0.2);border-color:rgba(59,130,246,0.5)}
+.contact-link svg{width:18px;height:18px;color:var(--accent-light)}
+
+/* Template */
+.template-box{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:var(--radius-xs);padding:16px;margin-top:16px;position:relative}
+.template-text{font-family:var(--mono);font-size:12.5px;color:var(--text-dim);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface-hover);border:1px solid var(--border-strong);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.copy-btn:hover{background:var(--accent-glow);border-color:rgba(59,130,246,0.3);color:var(--accent-bright)}
+.copy-btn.copied{background:var(--green-glow);border-color:rgba(16,185,129,0.3);color:var(--green-light)}
+
+/* Modal */
+.pay-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);opacity:0;transition:opacity .3s}
+.pay-modal.open{display:flex;opacity:1}
+.pay-modal-card{max-width:420px;width:90%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transform:translateY(20px) scale(0.95);transition:transform .3s var(--transition-expo)}
+.pay-modal.open .pay-modal-card{transform:translateY(0) scale(1)}
+.pay-modal-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:12px}
+.pay-modal-text{font-size:14px;color:var(--text-dim);line-height:1.7}
+.pay-modal-close{margin-top:20px;width:100%;padding:12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+.pay-modal-close:hover{background:var(--surface-hover);border-color:var(--border-strong)}
+
+footer{text-align:center;padding-top:32px;color:var(--text-muted);font-size:12px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);animation:fadeUp .6s var(--transition-expo) forwards}
+.reveal-d1{animation-delay:.1s}
+.reveal-d2{animation-delay:.2s}
+.reveal-d3{animation-delay:.3s}
+
+.mode-content{display:none}
+.mode-content.active{display:block}
+
+@media(max-width:640px){body{padding:24px 12px}.nav-btn{padding:9px 16px;font-size:13px}.flip-card-inner{min-height:160px}.flip-card-front,.flip-card-back{padding:16px 18px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+<div class="page">
+
+<header class="header reveal">
+<h1>Способы оплаты</h1>
+<p class="sub">Нажмите на карточку, чтобы узнать подробности</p>
+</header>
+
+<!-- NAV -->
+<nav class="nav-bar reveal reveal-d1">
+<div class="nav-bar-inner">
+<button class="nav-btn active" id="btnPay" onclick="setMode('pay')">Способы оплаты</button>
+<button class="nav-btn" id="btnContact" onclick="setMode('contact')">Связаться с продавцом</button>
+</div>
+</nav>
+
+<!-- ===== РАЗДЕЛ 1: СПОСОБЫ ОПЛАТЫ ===== -->
+<div id="mode-pay" class="mode-content active">
+
+<div class="section-title reveal reveal-d1"><div class="section-title-line"></div><span class="section-title-text">Способы оплаты</span><div class="section-title-line"></div></div>
+
+<!-- SAFE: Крипта -->
+<div class="flip-card reveal reveal-d1" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-green">₿</div>
+<div class="flip-front-text"><div class="flip-front-name">Криптовалюта</div><div class="flip-front-desc">Без комиссии</div></div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--green-light)">0%</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back safe">
+<div class="flip-back-title">Криптовалюта</div>
+<div class="flip-back-text">Оплата криптовалютой без комиссии. Принимаются <strong>USDT (TRC20/BEP20/ERC20)</strong>, <strong>BTC</strong>, <strong>ETH</strong> и другие популярные монеты. После согласования способа продавец вышлет реквизиты для перевода.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+<!-- SAFE: ПП -->
+<div class="flip-card reveal reveal-d2" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-green">ПП</div>
+<div class="flip-front-text"><div class="flip-front-name">Прямое пополнение с вашей карты</div><div class="flip-front-desc">Без комиссии</div></div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--green-light)">0%</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back safe">
+<div class="flip-back-title">Прямое пополнение с карты</div>
+<div class="flip-back-text">Прямой перевод с банковской карты. Принимаются карты <strong>Visa</strong>, <strong>Mastercard</strong>, <strong>МИР</strong>. Продавец вышлет данные для перевода после согласования условий.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+<!-- NEUTRAL: Оферта -->
+<div class="flip-card reveal reveal-d2" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-blue">О</div>
+<div class="flip-front-text">
+<div class="flip-front-name">Оферта
+  <button class="detail-btn" onclick="event.stopPropagation();showPayDetail('offer')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    Пояснение
+  </button>
+</div>
+<div class="flip-front-desc">Цена + комка (125%) оферты = сумма к оплате</div>
+</div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--accent-light)">+25%</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back neutral">
+<div class="flip-back-title">Оферта</div>
+<div class="flip-back-text">Цена + комка (125%) оферты = сумма к оплате. Оплата через юридическое соглашение (договор-оферту). Итого вы платите 125% от базовой цены. Подходит для юридических лиц и тех, кто нуждается в документальном подтверждении сделки.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+<!-- NEUTRAL: Payeer -->
+<div class="flip-card reveal reveal-d3" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-blue">P</div>
+<div class="flip-front-text">
+<div class="flip-front-name">Пеер | Payeer
+  <button class="detail-btn" onclick="event.stopPropagation();showPayDetail('payeer')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    Пояснение
+  </button>
+</div>
+<div class="flip-front-desc">+40% от цены</div>
+</div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--accent-light)">+40%</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back neutral">
+<div class="flip-back-title">Пеер | Payeer</div>
+<div class="flip-back-text">+40% от цены. Электронный кошелёк и платёжная система. Оплата происходит мгновенно после подтверждения транзакции в системе Payeer.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+<!-- UNSAFE: Funpay -->
+<div class="flip-card reveal reveal-d3" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-red">ФП</div>
+<div class="flip-front-text">
+<div class="flip-front-name">ФП | Funpay
+  <button class="detail-btn" onclick="event.stopPropagation();showPayDetail('funpay')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    Пояснение
+  </button>
+</div>
+<div class="flip-front-desc">+40% от цены + ждать 2 дня пока сделают вывод</div>
+</div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--red-light)">+40%</div><div class="flip-fee-label">+ 2 дня</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back unsafe">
+<div class="flip-back-title">ФП | Funpay</div>
+<div class="flip-back-text">+40% от цены + ждать 2 дня пока сделают вывод. Площадка для торговли цифровыми товарами. После оплаты нужно подождать до 2 дней, пока продавец выведет средства и передаст товар.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+<!-- UNSAFE: Playerok -->
+<div class="flip-card reveal reveal-d3" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner">
+<div class="flip-card-front">
+<div class="flip-front-row">
+<div class="flip-badge flip-badge-red">ПЛК</div>
+<div class="flip-front-text">
+<div class="flip-front-name">Плк | Playerok
+  <button class="detail-btn" onclick="event.stopPropagation();showPayDetail('playerok')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    Пояснение
+  </button>
+</div>
+<div class="flip-front-desc">+40% от цены + ждать 2 дня пока сделают вывод</div>
+</div>
+<div class="flip-front-fee"><div class="flip-fee-val" style="color:var(--red-light)">+40%</div><div class="flip-fee-label">+ 2 дня</div></div>
+</div>
+<span class="flip-hint">Нажми →</span>
+</div>
+<div class="flip-card-back unsafe">
+<div class="flip-back-title">Плк | Playerok</div>
+<div class="flip-back-text">+40% от цены + ждать 2 дня пока сделают вывод. Площадка для игровых товаров и услуг. Требуется ожидание до 2 дней на вывод средств продавцом.</div>
+<span class="flip-hint">← Назад</span>
+</div>
+</div></div>
+
+</div>
+
+<!-- ===== РАЗДЕЛ 2: СВЯЗАТЬСЯ С ПРОДАВЦОМ ===== -->
+<div id="mode-contact" class="mode-content">
+
+<div class="section-title reveal reveal-d1"><div class="section-title-line"></div><span class="section-title-text">Связаться с продавцом</span><div class="section-title-line"></div></div>
+
+<div class="contact-card reveal reveal-d2">
+<div class="contact-label">Выберите удобный способ связи</div>
+<div class="contact-links">
+<a href="ВАША_ССЫЛКА_НА_ТЕЛЕГРАМ" class="contact-link" target="_blank">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.09 6.2c-.87.335-.87 1.32 0 1.655l4.053 1.56 1.56 4.053c.335.87 1.32.87 1.655 0l6.2-16.09a2.242 2.242 0 0 0-1.878-2.893z"/><path d="M10.5 13.5L15 9"/></svg>
+ВАШ_ТЕЛЕГРАМ
+</a>
+<a href="ВАША_ССЫЛКА_НА_ДРУГОЙ_МЕССЕНДЖЕР" class="contact-link" target="_blank">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+ВАШ_ДРУГОЙ_КОНТАКТ
+</a>
+</div>
+
+<div class="template-box">
+<button class="copy-btn" onclick="copyTemplate(this)">Копировать</button>
+<div class="template-text" id="templateText">Привет! Хочу купить.
+Способ оплаты: (укажите)
+Готов к оплате.</div>
+</div>
+</div>
+
+</div>
+
+<footer class="reveal">© 2026</footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="pay-modal" id="payModal" onclick="closePayModal(event)">
+<div class="pay-modal-card" onclick="event.stopPropagation()">
+<div class="pay-modal-title" id="payModalTitle">Пояснение</div>
+<div class="pay-modal-text" id="payModalText"></div>
+<button class="pay-modal-close" onclick="closePayModal()">Понятно</button>
+</div>
+</div>
+
+<script>
+function setMode(mode) {
+  document.querySelectorAll('.mode-content').forEach(el => el.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn' + (mode === 'pay' ? 'Pay' : 'Contact')).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const payDetails = {
+  offer: { title: 'Оферта — пояснение', text: 'Цена + комка (125%) оферты = сумма к оплате. Оплата через юридическое соглашение (договор-оферту). Итого вы платите 125% от базовой цены. Подходит для юридических лиц и тех, кто нуждается в документальном подтверждении сделки.' },
+  payeer: { title: 'Пеер | Payeer — пояснение', text: '+40% от цены. Электронный кошелёк и платёжная система. Оплата происходит мгновенно после подтверждения транзакции в системе Payeer.' },
+  funpay: { title: 'ФП | Funpay — пояснение', text: '+40% от цены + ждать 2 дня пока сделают вывод. Площадка для торговли цифровыми товарами. После оплаты нужно подождать до 2 дней, пока продавец выведет средства и передаст товар.' },
+  playerok: { title: 'Плк | Playerok — пояснение', text: '+40% от цены + ждать 2 дня пока сделают вывод. Площадка для игровых товаров и услуг. Требуется ожидание до 2 дней на вывод средств продавцом.' }
+};
+
+function showPayDetail(key) {
+  const d = payDetails[key]; if (!d) return;
+  document.getElementById('payModalTitle').textContent = d.title;
+  document.getElementById('payModalText').textContent = d.text;
+  const modal = document.getElementById('payModal');
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('open'));
+}
+function closePayModal(e) {
+  if (e && e.target !== document.getElementById('payModal')) return;
+  const modal = document.getElementById('payModal');
+  modal.classList.remove('open');
+  setTimeout(() => modal.style.display = 'none', 300);
+}
+function copyTemplate(btn) {
+  const text = document.getElementById('templateText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Копировать'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+  </html>
